@@ -71,7 +71,7 @@ const countryData = {
   Argelia: "DZ.png",
   "Costa de Marfil": "CI.png",
   "Cabo Verde": "CV.png",
-  "Sudáfrica": "ZA.png",
+  "Sudáfrica": "za.png",
   "Congo": "CD.png",
   Seychelles: "SC.png",
   Iraq: "IQ.png", // Por clasificar

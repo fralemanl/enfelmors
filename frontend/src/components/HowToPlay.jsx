@@ -24,47 +24,47 @@ export default function HowToPlay() {
           />
           <div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tight text-yellow-400">
-              🏆 INTEG World Cup 2026 Contest
+              🏆 Quiniela Mundial 2026
             </h1>
-            <p className="mt-1 text-cyan-200 font-semibold">Quick Rules</p>
+            <p className="mt-1 text-cyan-200 font-semibold">Reglas Rápidas</p>
           </div>
         </div>
 
         <section className="mb-8">
           <h2 className="text-xl md:text-2xl font-bold text-emerald-300 mb-3">
-            ⚽ How to participate
+            ⚽ Cómo participar
           </h2>
           <ul className="list-disc pl-6 space-y-2 text-slate-100">
-            <li>Register on the platform with your details.</li>
-            <li>Submit your score prediction for each match.</li>
-            <li>You can edit your prediction up to 5 minutes before kickoff.</li>
-            <li>Once the match starts, the prediction is locked.</li>
+            <li>Regístrate en la plataforma con tus datos.</li>
+            <li>Envía tu predicción de puntuación para cada partido.</li>
+            <li>Puedes editar tu predicción hasta 5 minutos antes del inicio del partido.</li>
+            <li>Una vez que el partido comienza, la predicción se bloquea.</li>
           </ul>
         </section>
 
         <section className="mb-8">
           <h2 className="text-xl md:text-2xl font-bold text-emerald-300 mb-3">
-            🧮 Scoring System
+            🧮 Sistema de Puntuación
           </h2>
 
-          <h3 className="text-lg font-bold text-cyan-200 mb-2">⚽ Group Stage</h3>
+          <h3 className="text-lg font-bold text-cyan-200 mb-2">⚽ Fase de Grupos</h3>
           <ul className="list-disc pl-6 space-y-1 text-slate-100 mb-5">
-            <li>5 pts → Exact score</li>
-            <li>3 pts → Correct winner or draw</li>
-            <li>1 pt → Correct goals for one team</li>
+            <li>5 pts → Marcador exacto</li>
+            <li>3 pts → Ganador correcto o empate</li>
+            <li>1 pt → Goles correctos para un equipo</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-cyan-200 mb-3">🔥 Knockout Phases</h3>
+          <h3 className="text-lg font-bold text-cyan-200 mb-3">🔥 Fase de Eliminación</h3>
           <p className="text-slate-100 mb-3">
-            If you predict a draw, indicate the expected score after extra time and then select the team you expect to win on penalties.
+            Si predices un empate, indica el marcador esperado después del tiempo extra y luego selecciona el equipo que esperas que gane en los penales.
           </p>
           <div className="overflow-x-auto rounded-xl border border-cyan-400/30">
             <table className="w-full min-w-[320px] sm:min-w-[520px] text-left text-xs sm:text-base">
               <thead className="bg-cyan-700/35 text-cyan-100">
                 <tr>
-                  <th className="px-4 py-3 font-bold">Phase</th>
-                  <th className="px-4 py-3 font-bold">Exact Score</th>
-                  <th className="px-4 py-3 font-bold">Winner</th>
+                  <th className="px-4 py-3 font-bold">Fase</th>
+                  <th className="px-4 py-3 font-bold">Marcador Exacto</th>
+                  <th className="px-4 py-3 font-bold">Ganador</th>
                 </tr>
               </thead>
               <tbody>
@@ -82,34 +82,34 @@ export default function HowToPlay() {
 
         <section className="mb-8">
           <h2 className="text-xl md:text-2xl font-bold text-emerald-300 mb-3">
-            👑 World Champion
+            👑 Campeón Mundial
           </h2>
-          <p className="text-slate-100">If you guess the tournament champion:</p>
-          <p className="mt-2 text-yellow-400 font-extrabold text-lg">🏆 +15 bonus points</p>
+          <p className="text-slate-100">Si aciertas el campeón del torneo:</p>
+          <p className="mt-2 text-yellow-400 font-extrabold text-lg">🏆 +15 puntos de bonificación</p>
         </section>
 
         <section className="mb-8">
           <h2 className="text-xl md:text-2xl font-bold text-emerald-300 mb-3">
-            📊 Leaderboard
+            📊 Tabla de Clasificación
           </h2>
           <p className="text-slate-100 mb-3">
-            The leaderboard updates automatically after each match.
+            La tabla de clasificación se actualiza automáticamente después de cada partido.
           </p>
-          <p className="text-slate-100">In case of a tie:</p>
+          <p className="text-slate-100">En caso de empate:</p>
           <ol className="list-decimal pl-6 mt-2 space-y-1 text-slate-100">
-            <li>1 More exact scores</li>
-            <li>2 More correct winners</li>
+            <li>1 Marcadores exactos adicionales</li>
+            <li>2 Ganadores correctos adicionales</li>
           </ol>
         </section>
 
         <section className="mb-8">
           <h2 className="text-xl md:text-2xl font-bold text-emerald-300 mb-3">
-            ⚠️ Rules
+            ⚠️ Reglas
           </h2>
           <ul className="list-disc pl-6 space-y-2 text-slate-100">
-            <li>Only one account per player.</li>
+            <li>Solo se permite una cuenta por jugador.</li>
             <li>
-              Fraudulent predictions or multiple accounts will be disqualified.
+              Las predicciones fraudulentas o múltiples cuentas serán descalificadas.
             </li>
           </ul>
         </section>
@@ -119,9 +119,9 @@ export default function HowToPlay() {
             📩 Contact
           </h2>
           <p className="text-slate-100">
-            If you have questions or complaints, write to{" "}
+            Si tienes alguna pregunta o comentario, escribe a{" "}
             <a
-              href="mailto:alemanfausto@gmail.com"
+              href="mailto:quinimundial@gmail.com"
               className="font-bold text-cyan-300 underline hover:text-cyan-200"
             >
               quinimundial@gmail.com

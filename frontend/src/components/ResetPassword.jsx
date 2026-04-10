@@ -39,15 +39,15 @@ function ResetPassword() {
     <div className="max-w-md mx-auto mt-10 px-2">
       <div className="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-700">
         <h2 className="text-2xl font-black text-white mb-2 text-center">
-          Reset Password
+          Resetear contraseña
         </h2>
         <p className="text-slate-400 text-sm text-center mb-6">
-          Enter your new password below.
+          Ingresa tu nueva contraseña a continuación.
         </p>
 
         {done ? (
           <div className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-4 rounded-lg text-center text-sm">
-            ✓ Password updated successfully! Redirecting to login...
+            ✓ ¡Contraseña actualizada con éxito! Redirigiendo al inicio de sesión...
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
@@ -58,7 +58,7 @@ function ResetPassword() {
             )}
             <div className="mb-4">
               <label className="block text-slate-400 text-sm font-bold mb-2">
-                New Password
+                Nueva Contraseña
               </label>
               <div className="relative">
                 <input
@@ -90,7 +90,7 @@ function ResetPassword() {
             </div>
             <div className="mb-6">
               <label className="block text-slate-400 text-sm font-bold mb-2">
-                Confirm Password
+                Confirmar Contraseña
               </label>
               <input
                 type={showPassword ? "text" : "password"}
@@ -105,7 +105,7 @@ function ResetPassword() {
               disabled={loading}
               className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-green-900/20 transition-all transform active:scale-95"
             >
-              {loading ? "Saving..." : "Set New Password"}
+              {loading ? "Guardando..." : "Establecer nueva contraseña"}
             </button>
           </form>
         )}

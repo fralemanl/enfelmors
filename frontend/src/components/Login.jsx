@@ -32,7 +32,7 @@ function Login({onLogin}) {
     <div className="max-w-md mx-auto mt-6 sm:mt-10 px-2">
       <div className="bg-slate-800 p-4 sm:p-8 rounded-2xl shadow-2xl border border-slate-700">
         <h2 className="text-3xl font-black text-white mb-6 text-center">
-          Login to Your Account
+          Iniciar sesión
         </h2>
 
         {error && (
@@ -44,7 +44,7 @@ function Login({onLogin}) {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label className="block text-slate-400 text-sm font-bold mb-2">
-              User
+              Usuario
             </label>
             <input
               type="text"
@@ -57,7 +57,7 @@ function Login({onLogin}) {
 
           <div className="mb-8">
             <label className="block text-slate-400 text-sm font-bold mb-2">
-              Password
+              Contraseña
             </label>
             <div className="relative mt-1">
               <input
@@ -71,7 +71,7 @@ function Login({onLogin}) {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 h-9 w-9 flex items-center justify-center rounded-md bg-slate-700/95 ring-1 ring-slate-500/70 text-slate-100 hover:bg-slate-600 focus:outline-none"
-                aria-label={showPassword ? "Hide Password" : "Show Password"}
+                aria-label={showPassword ? "Ocultar Contraseña" : "Mostrar Contraseña"}
               >
                 {showPassword ? (
                   <svg
@@ -128,17 +128,17 @@ function Login({onLogin}) {
             className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-green-900/20 transition-all transform active:scale-95"
             disabled={loading}
           >
-            {loading ? "Login..." : "Login"}
+            {loading ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
         </form>
 
         <p className="text-center mt-6 text-slate-400 text-sm">
-          Don't have an account?{" "}
+          ¿No tienes una cuenta?{" "}
           <a
             href="/registro"
             className="text-green-400 hover:underline font-bold"
           >
-            Create an account
+            Crear una cuenta
           </a>
         </p>
       </div>

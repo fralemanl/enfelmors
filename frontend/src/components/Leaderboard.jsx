@@ -49,19 +49,19 @@ function Leaderboard() {
   };
 
   if (loading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return <div className="text-center py-10">Cargando...</div>;
   }
 
   return (
     <div>
       <h1 className="text-2xl sm:text-3xl font-black mb-6 sm:mb-8 text-white text-center">
-        🏆 Leaderboard
+        🏆 Tabla de Clasificación
       </h1>
 
       <div className="bg-slate-800 rounded-xl shadow-xl border border-slate-700 overflow-hidden">
         {leaderboard.length === 0 ? (
           <div className="text-center text-slate-500 py-10">
-            No data available in the leaderboard
+            No hay datos disponibles en la tabla de clasificación
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -72,16 +72,16 @@ function Leaderboard() {
                     #
                   </th>
                   <th className="text-left py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
-                    Player Name
+                    Nombre del Jugador
                   </th>
                   <th className="text-left py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
-                    Company
+                    Empresa
                   </th>
                   <th className="text-center py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
-                    Points
+                    Puntos
                   </th>
                   <th className="text-center py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
-                    Champion
+                    Campeón
                   </th>
                 </tr>
               </thead>
@@ -147,69 +147,69 @@ function Leaderboard() {
 
       <div className="mt-8 bg-slate-800/50 p-4 sm:p-6 rounded-xl border border-slate-700 text-sm sm:text-base">
         <h3 className="font-bold mb-3 text-white text-lg">
-          🏆 Official Scoring System
+          🏆 Sistema de Puntuación Oficial
         </h3>
         <div className="space-y-4 text-slate-300">
           <div>
-            <span className="font-bold text-white">⚽ Group Stage</span>
+            <span className="font-bold text-white">⚽ Fase de Grupos</span>
             <ul className="list-disc ml-6">
-              <li>5 points for an exact score.</li>
+              <li>5 puntos por un marcador exacto.</li>
               <li>
-                3 points for predicting the winner or a draw (without matching the exact score).
+                3 puntos por predecir el ganador o un empate (sin coincidir con el marcador exacto).
               </li>
               <li>
-                1 point for predicting only one of the goals in the score (partial result).
+                1 punto por predecir solo uno de los goles en el marcador (resultado parcial).
               </li>
             </ul>
           </div>
           <div>
             <span className="font-bold text-white">
-              🔥 Round of 32
+              🔥 32vos
             </span>
             <ul className="list-disc ml-6">
-              <li>6 points for an exact score.</li>
-              <li>3 points for predicting the winner or a draw.</li>
+              <li>6 puntos por un marcador exacto.</li>
+              <li>3 puntos por predecir el ganador o un empate.</li>
             </ul>
           </div>
           <div>
-            <span className="font-bold text-white">🔥 Round of 16</span>
+            <span className="font-bold text-white">🔥 Octavos de Final</span>
             <ul className="list-disc ml-6">
-              <li>7 points for an exact score.</li>
-              <li>4 points for predicting the winner or a draw.</li>
+              <li>7 puntos por un marcador exacto.</li>
+              <li>4 puntos por predecir el ganador o un empate.</li>
             </ul>
           </div>
           <div>
-            <span className="font-bold text-white">🔥 Quarterfinals</span>
+            <span className="font-bold text-white">🔥 Cuartos de Final</span>
             <ul className="list-disc ml-6">
-              <li>9 points for an exact score.</li>
-              <li>5 points for predicting the winner or a draw.</li>
+              <li>9 puntos por un marcador exacto.</li>
+              <li>5 puntos por predecir el ganador o un empate.</li>
             </ul>
           </div>
           <div>
-            <span className="font-bold text-white">🔥 Semifinals</span>
+            <span className="font-bold text-white">🔥 Semifinales</span>
             <ul className="list-disc ml-6">
-              <li>12 points for an exact score.</li>
-              <li>6 points for predicting the winner or a draw.</li>
+              <li>12 puntos por un marcador exacto.</li>
+              <li>6 puntos por predecir el ganador o un empate.</li>
             </ul>
           </div>
           <div>
-            <span className="font-bold text-white">🥉 Third Place</span>
+            <span className="font-bold text-white">🥉 Tercer Lugar</span>
             <ul className="list-disc ml-6">
-              <li>10 points for an exact score.</li>
-              <li>5 points for predicting the winner or a draw.</li>
+              <li>10 puntos por un marcador exacto.</li>
+              <li>5 puntos por predecir el ganador o un empate.</li>
             </ul>
           </div>
           <div>
             <span className="font-bold text-white">🏆 Final</span>
             <ul className="list-disc ml-6">
-              <li>15 points for an exact score.</li>
-              <li>8 points for predicting the winner or a draw.</li>
+              <li>15 puntos por un marcador exacto.</li>
+              <li>8 puntos por predecir el ganador o un empate.</li>
             </ul>
           </div>
           <div>
-            <span className="font-bold text-white">👑 World Champion</span>
+            <span className="font-bold text-white">👑 Campeón Mundial</span>
             <ul className="list-disc ml-6">
-              <li>15 additional points for predicting the tournament champion.</li>
+              <li>15 puntos adicionales por predecir el campeón del torneo.</li>
             </ul>
           </div>
         </div>

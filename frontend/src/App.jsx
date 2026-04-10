@@ -78,7 +78,7 @@ function App() {
                   style={{marginBottom: 0}}
                 />
                 <span className="truncate">
-                  World Cup 2026 <span className="text-green-500">Contest</span>
+                  Copa del Mundo 2026 <span className="text-green-500">Contest</span>
                 </span>
               </Link>
 
@@ -106,11 +106,11 @@ function App() {
               <div className="hidden sm:flex items-center gap-4">
                 {isValidUser ? (
                   <>
-                    <Link to="/bienvenida" className="font-medium hover:text-green-400 transition-colors">Welcome</Link>
-                    <Link to="/partidos" className="font-medium hover:text-green-400 transition-colors">My Predictions</Link>
-                    <Link to="/predicciones" className="font-medium hover:text-green-400 transition-colors">My Points</Link>
-                    <Link to="/clasificacion" className="font-medium hover:text-green-400 transition-colors">Leaderboard</Link>
-                    <Link to="/como-jugar" className="font-medium hover:text-green-400 transition-colors">How to Play?</Link>
+                    <Link to="/bienvenida" className="font-medium hover:text-green-400 transition-colors">Bienvenido</Link>
+                    <Link to="/partidos" className="font-medium hover:text-green-400 transition-colors">Mis predicciones</Link>
+                    <Link to="/predicciones" className="font-medium hover:text-green-400 transition-colors">Mis puntos</Link>
+                    <Link to="/clasificacion" className="font-medium hover:text-green-400 transition-colors">Clasificación</Link>
+                    <Link to="/como-jugar" className="font-medium hover:text-green-400 transition-colors">Cómo jugar?</Link>
                     {user.is_admin && (
                       <Link to="/admin" className="font-medium text-yellow-400 hover:text-yellow-300 transition-colors">Admin</Link>
                     )}
@@ -119,14 +119,14 @@ function App() {
                       onClick={handleLogout}
                       className="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all"
                     >
-                      Logout
+                      Salir
                     </button>
                   </>
                 ) : (
                   <>
-                    <Link to="/como-jugar" className="font-medium hover:text-green-400 transition-colors py-2">How to Play?</Link>
-                    <Link to="/login" className="font-medium hover:text-green-400 transition-colors py-2">Login</Link>
-                    <Link to="/registro" className="bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-lg font-bold shadow-lg shadow-green-900/20 transition-all transform active:scale-95">Register</Link>
+                    <Link to="/como-jugar" className="font-medium hover:text-green-400 transition-colors py-2">Cómo jugar?</Link>
+                    <Link to="/login" className="font-medium hover:text-green-400 transition-colors py-2">Iniciar sesión</Link>
+                    <Link to="/registro" className="bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-lg font-bold shadow-lg shadow-green-900/20 transition-all transform active:scale-95">Registrarse</Link>
                   </>
                 )}
               </div>
@@ -135,11 +135,11 @@ function App() {
             <div className={`${menuOpen ? "flex" : "hidden"} sm:hidden mt-2 flex-col gap-2 bg-slate-800 border border-slate-700 rounded-xl p-3`}>
               {isValidUser ? (
                 <>
-                  <Link to="/bienvenida" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Welcome</Link>
-                  <Link to="/partidos" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">My Predictions</Link>
-                  <Link to="/predicciones" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">My Points</Link>
-                  <Link to="/clasificacion" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Leaderboard</Link>
-                  <Link to="/como-jugar" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">How to Play?</Link>
+                  <Link to="/bienvenida" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Bienvenido</Link>
+                  <Link to="/partidos" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Mis predicciones</Link>
+                  <Link to="/predicciones" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Mis puntos</Link>
+                  <Link to="/clasificacion" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Clasificación</Link>
+                  <Link to="/como-jugar" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Cómo jugar?</Link>
                   {user.is_admin && (
                     <Link to="/admin" onClick={closeMobileMenu} className="w-full text-center font-medium text-yellow-400 hover:text-yellow-300 py-2">Admin</Link>
                   )}
@@ -151,14 +151,14 @@ function App() {
                     }}
                     className="bg-red-600/80 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all"
                   >
-                    Logout
+                    Cerrar sesión
                   </button>
                 </>
               ) : (
                 <>
-                  <Link to="/como-jugar" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">How to Play?</Link>
-                  <Link to="/login" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Login</Link>
-                  <Link to="/registro" onClick={closeMobileMenu} className="w-full text-center bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-lg font-bold">Register</Link>
+                  <Link to="/como-jugar" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Cómo jugar?</Link>
+                  <Link to="/login" onClick={closeMobileMenu} className="w-full text-center font-medium hover:text-green-400 py-2">Iniciar sesión</Link>
+                  <Link to="/registro" onClick={closeMobileMenu} className="w-full text-center bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-lg font-bold">Registrarse</Link>
                 </>
               )}
             </div>

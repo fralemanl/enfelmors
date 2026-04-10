@@ -40,26 +40,26 @@ export default function Welcome({user}) {
         />
         <div className="text-center md:text-left w-full">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-green-400 mb-2 drop-shadow-lg">
-            Welcome!
+            Bienvenido!
             <br />
             {user.username}
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-slate-200 mb-4 max-w-xl mx-auto md:mx-0">
-            Participate in the official 2026 World Cup prediction contest,
-            where you compete with your INTEG family and show off your soccer knowledge.
+            Participa en el concurso oficial de predicciones del Mundial 2026,
+            donde competirás con tu familia INTEG y demostrarás tus conocimientos de fútbol.
           </p>
           <div className="flex flex-col md:flex-row gap-3 sm:gap-4 items-center md:items-start justify-center md:justify-start">
             <Link
               to="/partidos"
               className="bg-green-600 hover:bg-green-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-green-900/20 transition-all transform active:scale-95"
             >
-              My predictions
+              Mis predicciones
             </Link>
             <Link
               to="/clasificacion"
               className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-blue-900/20 transition-all transform active:scale-95"
             >
-              Leaderboard
+              Clasificación
             </Link>
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function Welcome({user}) {
       <div className="w-full flex justify-center sm:justify-end items-end">
         <div className="mb-2 mr-0 sm:mr-2 bg-slate-900/90 border border-green-700 rounded-xl px-4 sm:px-6 py-3 sm:py-4 shadow-2xl flex flex-col items-center animate-fade-in text-sm sm:text-base">
           <span className="text-green-400 font-bold text-lg mb-1">
-            Days to kickoff:
+            Días para el inicio:
           </span>
           <span className="text-2xl font-black text-white tracking-widest">
             {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{" "}

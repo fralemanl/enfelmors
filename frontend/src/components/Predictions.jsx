@@ -175,7 +175,7 @@ function Predictions({user}) {
             {exactos}
           </div>
           <div className="text-slate-400 font-medium uppercase text-sm tracking-wider">
-            Exact Scores
+            Scores exactos
           </div>
         </div>
         <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
@@ -183,7 +183,7 @@ function Predictions({user}) {
             {ganador}
           </div>
           <div className="text-slate-400 font-medium uppercase text-sm tracking-wider">
-            Winners predicted
+            Ganadores predichos
           </div>
         </div>
         <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
@@ -191,7 +191,7 @@ function Predictions({user}) {
             {parcial}
           </div>
           <div className="text-slate-400 font-medium uppercase text-sm tracking-wider">
-            Goals predicted (Group phase)
+            Goles predichos (Fase de grupos)
           </div>
         </div>
       </div>
@@ -199,19 +199,19 @@ function Predictions({user}) {
         <div className="mb-8 bg-slate-900/70 p-4 rounded-xl border border-yellow-700 flex items-center gap-4">
           <span className="text-2xl">👑</span>
           <span className="text-white font-bold">
-            Your World Cup champion:{" "}
+            Tu campeón del Mundial:{" "}
             <span className="text-yellow-300">{champion.team}</span>
             {finalWinner &&
               (champion.team === finalWinner ? (
                 <span className="ml-2 text-green-400 font-black">
-                  +15 pts (Good Job!)
+                  +15 pts (¡Buen trabajo!)
                 </span>
               ) : (
-                <span className="ml-2 text-red-400 font-black">Bad Luck</span>
+                <span className="ml-2 text-red-400 font-black">Mala suerte</span>
               ))}
             {!finalWinner && (
               <span className="ml-2 text-slate-400">
-                (15 points if you get it right)
+                (15 puntos si aciertas)
               </span>
             )}
           </span>
@@ -221,12 +221,12 @@ function Predictions({user}) {
       {/* Lista de predicciones */}
       <div className="bg-slate-800 rounded-xl shadow-xl border border-slate-700 overflow-hidden">
         <h2 className="text-xl font-bold p-6 border-b border-slate-700 text-white">
-          Predictions History
+          Historial de Predicciones
         </h2>
 
         {predictions.length === 0 ? (
           <div className="text-center text-slate-500 py-10">
-            You don´t have any prediction yet
+            No tienes ninguna predicción aún
           </div>
         ) : (
           <div className="p-4 space-y-4">
@@ -234,7 +234,7 @@ function Predictions({user}) {
               <div className="bg-yellow-900/30 border border-yellow-600 rounded-xl p-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 font-bold text-yellow-300">
                   <span className="text-2xl">👑</span>
-                  <span>World Cup Champion: {champion.team}</span>
+                  <span>Campeón del Mundial: {champion.team}</span>
                 </div>
                 <div className="font-bold">
                   {finalWinner ? (
@@ -245,7 +245,7 @@ function Predictions({user}) {
                     )
                   ) : (
                     <span className="text-slate-400">
-                      (15 points if you get it right)
+                      (15 puntos si aciertas)
                     </span>
                   )}
                 </div>

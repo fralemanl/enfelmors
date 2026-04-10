@@ -43,10 +43,10 @@ const Register = () => {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-700 via-blue-600 to-purple-600 px-2">
       <div className="w-full max-w-md p-4 sm:p-8 space-y-6 bg-slate-900/90 rounded-2xl shadow-2xl border border-slate-700">
         <h2 className="text-3xl font-extrabold text-center text-white drop-shadow mb-2">
-          Create an account
+          Crear una cuenta
         </h2>
         <p className="text-center text-slate-300 mb-4">
-          Join the contest and compete for the top spot!
+          ¡Únete al concurso y compite por el primer lugar!
         </p>
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* FIELD TO SELECT CHAMPION */}
@@ -55,7 +55,7 @@ const Register = () => {
               htmlFor="champion"
               className="text-sm font-semibold text-slate-200"
             >
-              Who will be the World Cup champion?
+              ¿Quién será el campeón del Mundial?
             </label>
             <select
               id="champion"
@@ -66,7 +66,7 @@ const Register = () => {
               className="w-full px-3 py-2 mt-1 border border-yellow-500 bg-slate-800 text-white rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
             >
               <option value="" disabled>
-                Select a team...
+                Selecciona un equipo...
               </option>
               {teams.map((team) => (
                 <option key={team} value={team}>
@@ -80,7 +80,7 @@ const Register = () => {
               htmlFor="username"
               className="text-sm font-semibold text-slate-200"
             >
-              Username
+              Nombre de usuario
             </label>
             <input
               id="username"
@@ -115,7 +115,7 @@ const Register = () => {
               htmlFor="company"
               className="text-sm font-semibold text-slate-200"
             >
-              Company Name
+              Nombre de la empresa
             </label>
             <input
               id="company"
@@ -133,7 +133,7 @@ const Register = () => {
               htmlFor="password"
               className="text-sm font-semibold text-slate-200"
             >
-              Password
+              Contraseña
             </label>
             <div className="relative mt-1">
               <input

@@ -25,18 +25,18 @@ function ForgotPassword() {
     <div className="max-w-md mx-auto mt-10 px-2">
       <div className="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-700">
         <h2 className="text-2xl font-black text-white mb-2 text-center">
-          Forgot Password
+          Contraseña Olvidada
         </h2>
         <p className="text-slate-400 text-sm text-center mb-6">
-          Enter your email and we'll send you a link to reset your password.
+          Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
         </p>
 
         {sent ? (
           <div className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-4 rounded-lg text-center text-sm">
-            ✓ If the email is registered, you'll receive a reset link shortly.
+            ✓ Si el correo está registrado, recibirás un enlace para restablecer tu contraseña en breve.
             <br />
             <a href="/login" className="text-green-400 underline mt-3 inline-block font-bold">
-              Back to Login
+              Volver al inicio de sesión
             </a>
           </div>
         ) : (
@@ -64,16 +64,16 @@ function ForgotPassword() {
               disabled={loading}
               className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-green-900/20 transition-all transform active:scale-95"
             >
-              {loading ? "Sending..." : "Send Reset Link"}
+              {loading ? "Enviando..." : "Enviar enlace de restablecimiento"}
             </button>
           </form>
         )}
 
         {!sent && (
           <p className="text-center mt-5 text-slate-400 text-sm">
-            Remember your password?{" "}
+            ¿Recuerdas tu contraseña?{" "}
             <a href="/login" className="text-green-400 hover:underline font-bold">
-              Login
+              Iniciar sesión
             </a>
           </p>
         )}

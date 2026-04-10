@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {getMatches, getUserPredictions, getChampionPrediction} from "../api";
 import TeamFlag from "./TeamFlag";
-import {toUsEasternTime} from "../utils/panamaTime";
+import {toPanamaTime} from "../utils/panamaTime";
 
 function Predictions({user}) {
   // const isAdmin = localStorage.getItem("is_admin") === "true";
@@ -98,11 +98,11 @@ function Predictions({user}) {
   }
 
   const formatDate = (dateStr) => {
-    const easternDate = toUsEasternTime(dateStr);
-    if (!easternDate || !easternDate.isValid || !easternDate.isValid()) {
+    const panamaDate = toPanamaTime(dateStr);
+    if (!panamaDate || !panamaDate.isValid || !panamaDate.isValid()) {
       return "";
     }
-    return `${easternDate.format("DD MMM HH:mm")} ET`;
+    return `${panamaDate.format("DD MMM HH:mm")} PT`;
   };
 
   const getPhaseLabelInEnglish = (phase) => {
@@ -207,7 +207,9 @@ function Predictions({user}) {
                   +15 pts (¡Buen trabajo!)
                 </span>
               ) : (
-                <span className="ml-2 text-red-400 font-black">Mala suerte</span>
+                <span className="ml-2 text-red-400 font-black">
+                  Mala suerte
+                </span>
               ))}
             {!finalWinner && (
               <span className="ml-2 text-slate-400">

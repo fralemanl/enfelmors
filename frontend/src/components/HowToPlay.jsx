@@ -18,9 +18,9 @@ export default function HowToPlay() {
       <div className="relative z-10 max-w-4xl mx-auto text-sm sm:text-base">
         <div className="mb-8 flex items-center gap-4">
           <img
-            src="/img/integ.png"
-            alt="INTEG"
-            className="h-16 w-16 rounded-xl bg-white object-contain p-1 shadow"
+            src="/img/logo.png"
+            alt="Logo Park and Padel"
+            className="h-16 w-16 rounded-xl object-contain p-1 shadow"
           />
           <div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tight text-yellow-400">

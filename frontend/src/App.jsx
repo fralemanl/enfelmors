@@ -74,7 +74,7 @@ function App() {
                 <img
                   src="/img/logo.png"
                   alt="Logo Park and Padel"
-                  className="w-12 h-12 sm:w-20 sm:h-20 object-contain bg-white rounded shadow"
+                  className="w-12 h-12 sm:w-20 sm:h-20 object-contain"
                   style={{marginBottom: 0}}
                 />
                 <span className="truncate">
@@ -247,7 +247,7 @@ function App() {
         {/* Footer */}
         <footer className="bg-slate-800 text-white py-8 mt-12 border-t border-slate-700">
           <div className="container mx-auto px-4 flex flex-col items-center">
-            <img src="/img/logo.png" alt="Park and Padel Logo" className="w-24 h-24 mb-4 object-contain bg-white rounded shadow" />
+            <img src="/img/logo.png" alt="Park and Padel Logo" className="w-24 h-24 mb-4 object-contain" />
           </div>
         </footer>
       </div>

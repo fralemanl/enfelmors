@@ -116,7 +116,7 @@ export default function HowToPlay() {
 
         <section>
           <h2 className="text-xl md:text-2xl font-bold text-emerald-300 mb-3">
-            📩 Contact
+            📩 Contacto
           </h2>
           <p className="text-slate-100">
             Si tienes alguna pregunta o comentario, escribe a{" "}

@@ -194,7 +194,7 @@ function MatchList({user}) {
       prediction.predicted_away === "" ||
       prediction.predicted_away === null
     ) {
-      setError("Please enter both results");
+      setError("Por favor completa ambos marcadores antes de guardar tu predicción.");
       return;
     }
     // Calculate winner for group stage or knockout
@@ -229,12 +229,12 @@ function MatchList({user}) {
           editing: false,
         },
       }));
-      setSuccess("Prediction saved successfully");
+      setSuccess("Predicción guardada exitosamente");
       setTimeout(() => setSuccess(""), 3000);
       // Recargar para asegurar sincronía con el backend
       await loadPredictions();
     } catch (err) {
-      setError(err.response?.data?.detail || "Error saving prediction");
+      setError(err.response?.data?.detail || "Error al guardar la predicción");
       setTimeout(() => setError(""), 3000);
     }
   };
@@ -275,18 +275,18 @@ function MatchList({user}) {
   if (user && user.is_admin) {
     return (
       <div className="text-center py-10 text-red-400 font-bold">
-        Administrators cannot play.
+        Los administradores no pueden jugar.
       </div>
     );
   }
   if (loading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return <div className="text-center py-10">Cargando...</div>;
   }
 
   return (
     <div className="pb-8">
       <h1 className="text-2xl sm:text-3xl font-black mb-6 sm:mb-8 text-white text-center">
-        My Predictions
+        Mis Predicciones
       </h1>
 
       {/* Selectors by phase, date, and stadium */}
@@ -296,7 +296,7 @@ function MatchList({user}) {
           onChange={(e) => setPhaseFilter(e.target.value)}
           className="px-4 py-2 rounded-full text-sm font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700"
         >
-          <option value="">All phases</option>
+          <option value="">Todas las fases</option>
           {phases.map((p) => (
             <option key={p} value={p}>
               {p}
@@ -308,7 +308,7 @@ function MatchList({user}) {
           onChange={(e) => setDateFilter(e.target.value)}
           className="px-4 py-2 rounded-full text-sm font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700"
         >
-          <option value="">All dates</option>
+          <option value="">Todas las fechas</option>
           {dates.map((d) => (
             <option key={d} value={d}>
               {dayjs(d).locale("es").format("DD MMM YYYY")}
@@ -320,7 +320,7 @@ function MatchList({user}) {
           onChange={(e) => setStadiumFilter(e.target.value)}
           className="px-4 py-2 rounded-full text-sm font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700"
         >
-          <option value="">All stadiums</option>
+          <option value="">Todos los estadios</option>
           {stadiums.map((s) => (
             <option key={s} value={s}>
               {s}
@@ -337,7 +337,7 @@ function MatchList({user}) {
 
       {error && (
         <div className="bg-red-500/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg mb-6 text-center">
-          {error} (Warning: you can try to save the prediction)
+          {error} (Advertencia: puedes intentar guardar la predicción)
         </div>
       )}
 

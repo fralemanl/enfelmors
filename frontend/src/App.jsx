@@ -78,7 +78,7 @@ function App() {
                   style={{marginBottom: 0}}
                 />
                 <span className="truncate">
-                  Copa del Mundo 2026 <span className="text-green-500">Contest</span>
+                  Copa del Mundo 2026 <span className="text-green-500">Quiniela</span>
                 </span>
               </Link>
 

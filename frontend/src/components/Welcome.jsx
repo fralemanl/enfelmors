@@ -34,8 +34,8 @@ export default function Welcome({user}) {
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-2 sm:px-4 py-6 sm:py-10 bg-gradient-to-br from-green-900 via-slate-900 to-black">
       <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-10 mb-6 sm:mb-8 w-full">
         <img
-          src="/img/integ.png"
-          alt="Logo Integ"
+          src="/img/logo.png"
+          alt="Logo"
           className="w-40 sm:w-80 h-auto object-contain drop-shadow-lg bg-white rounded-lg p-2 mx-auto"
         />
         <div className="text-center md:text-left w-full">
@@ -46,7 +46,7 @@ export default function Welcome({user}) {
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-slate-200 mb-4 max-w-xl mx-auto md:mx-0">
             Participa en el concurso oficial de predicciones del Mundial 2026,
-            donde competirás con tu familia INTEG y demostrarás tus conocimientos de fútbol.
+            donde competirás con tu familia Park and Padel y demostrarás tus conocimientos de fútbol.
           </p>
           <div className="flex flex-col md:flex-row gap-3 sm:gap-4 items-center md:items-start justify-center md:justify-start">
             <Link

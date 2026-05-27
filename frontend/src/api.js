@@ -1,15 +1,8 @@
-// Reset all (admin)
-export const resetAll = (adminUserId) =>
-  api.post(`/reset_all?admin_user_id=${adminUserId}`);
-// Champion Prediction
-export const getChampionPrediction = (userId) => api.get(`/champion/${userId}`);
-
-// Export
-export const exportPredictions = () => api.get("/export/predictions");
 import axios from "axios";
 
 const BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-const API_BASE_URL = `${BASE}/api`;
+const BASE_WITHOUT_API = BASE.endsWith("/api") ? BASE.slice(0, -4) : BASE;
+const API_BASE_URL = `${BASE_WITHOUT_API}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -52,5 +45,15 @@ export const getMatchPredictions = (matchId) =>
 
 // Leaderboard
 export const getLeaderboard = () => api.get("/leaderboard");
+
+// Reset all (admin)
+export const resetAll = (adminUserId) =>
+  api.post(`/reset_all?admin_user_id=${adminUserId}`);
+
+// Champion Prediction
+export const getChampionPrediction = (userId) => api.get(`/champion/${userId}`);
+
+// Export
+export const exportPredictions = () => api.get("/export/predictions");
 
 export default api;

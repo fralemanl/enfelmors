@@ -1,8 +1,15 @@
 import axios from "axios";
 
-const BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-const BASE_WITHOUT_API = BASE.endsWith("/api") ? BASE.slice(0, -4) : BASE;
-const API_BASE_URL = `${BASE_WITHOUT_API}/api`;
+const RAW_BASE = (import.meta.env.VITE_API_URL || "").trim().replace(/\/$/, "");
+const ABSOLUTE_BASE = /^https?:\/\//i.test(RAW_BASE)
+  ? RAW_BASE
+  : RAW_BASE
+    ? `https://${RAW_BASE}`
+    : "";
+const BASE_WITHOUT_API = ABSOLUTE_BASE.endsWith("/api")
+  ? ABSOLUTE_BASE.slice(0, -4)
+  : ABSOLUTE_BASE;
+const API_BASE_URL = BASE_WITHOUT_API ? `${BASE_WITHOUT_API}/api` : "/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

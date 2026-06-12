@@ -100,7 +100,11 @@ class PredictionResponse(BaseModel):
         orm_mode = True
 
 class LeaderboardEntry(BaseModel):
+    id: int
     username: str
+    empresa: Optional[str] = None
+    champion_team: Optional[str] = None
+    is_admin: bool = False
     total_points: int
     correct_results: int
     correct_scores: int
@@ -121,6 +125,7 @@ from fastapi import status
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Boolean
+from sqlalchemy import and_, or_, case, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, relationship
 from pydantic import BaseModel
@@ -135,7 +140,31 @@ class ChampionPredictionResponse(BaseModel):
     class Config:
         orm_mode = True
 from datetime import datetime, timezone
+from time import monotonic
 from typing import List, Optional
+
+
+LEADERBOARD_CACHE_TTL_SECONDS = int(os.environ.get("LEADERBOARD_CACHE_TTL_SECONDS", "30"))
+_leaderboard_cache = {"expires_at": 0.0, "data": None}
+
+
+def invalidate_leaderboard_cache() -> None:
+    _leaderboard_cache["expires_at"] = 0.0
+    _leaderboard_cache["data"] = None
+
+
+def get_cached_leaderboard():
+    if _leaderboard_cache["data"] is None:
+        return None
+    if monotonic() >= _leaderboard_cache["expires_at"]:
+        invalidate_leaderboard_cache()
+        return None
+    return _leaderboard_cache["data"]
+
+
+def set_cached_leaderboard(data) -> None:
+    _leaderboard_cache["data"] = data
+    _leaderboard_cache["expires_at"] = monotonic() + LEADERBOARD_CACHE_TTL_SECONDS
 
 
 def parse_iso_to_utc_naive(date_value: str) -> datetime:
@@ -267,6 +296,7 @@ def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get
         user.password = hash_password(user_update.password)
     db.commit()
     db.refresh(user)
+    invalidate_leaderboard_cache()
     return user
 
 @app.post("/api/users/{user_id}/reset_password")
@@ -391,6 +421,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     db.delete(user)
     db.commit()
+    invalidate_leaderboard_cache()
     return {"detail": "Usuario eliminado"}
 @app.post("/api/users/register", response_model=UserResponse)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -416,6 +447,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     champion_prediction = ChampionPrediction(user_id=db_user.id, team=user.champion)
     db.add(champion_prediction)
     db.commit()
+    invalidate_leaderboard_cache()
 
     return db_user
 
@@ -468,6 +500,7 @@ def reset_all(db: Session = Depends(get_db), admin_user_id: int = None):
     db.query(Prediction).delete()
     # NO eliminar partidos
     db.commit()
+    invalidate_leaderboard_cache()
     return {"message": "Todos los puntajes y campeón han sido reseteados, los partidos se mantienen"}
 @app.post("/api/matches", response_model=MatchResponse)
 def create_match(match: MatchCreate, db: Session = Depends(get_db)):
@@ -480,6 +513,7 @@ def create_match(match: MatchCreate, db: Session = Depends(get_db)):
     db.add(db_match)
     db.commit()
     db.refresh(db_match)
+    invalidate_leaderboard_cache()
     return MatchResponse.from_orm_force_string(db_match)
 
 
@@ -530,6 +564,7 @@ def update_match(match_id: int, match_update: MatchUpdate, db: Session = Depends
 
     db.commit()
     db.refresh(match)
+    invalidate_leaderboard_cache()
     return MatchResponse.from_orm_force_string(match)
 
 @app.delete("/api/matches/{match_id}")
@@ -539,6 +574,7 @@ def delete_match(match_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Partido no encontrado")
     db.delete(match)
     db.commit()
+    invalidate_leaderboard_cache()
     return {"message": "Partido eliminado"}
 
 # Endpoints de Predicciones
@@ -639,6 +675,7 @@ def create_prediction(prediction: PredictionCreate, user_id: int, db: Session = 
                 existing.winner = None
         db.commit()
         db.refresh(existing)
+        invalidate_leaderboard_cache()
         return existing
     # Crear nueva predicción
     db_prediction = Prediction(
@@ -651,6 +688,7 @@ def create_prediction(prediction: PredictionCreate, user_id: int, db: Session = 
     db.add(db_prediction)
     db.commit()
     db.refresh(db_prediction)
+    invalidate_leaderboard_cache()
     return db_prediction
 
 @app.get("/api/predictions/user/{user_id}", response_model=List[PredictionResponse])
@@ -678,6 +716,7 @@ def adjust_prediction_points(request: AdjustPointsRequest, db: Session = Depends
     prediction.points = request.new_points
     db.commit()
     db.refresh(prediction)
+    invalidate_leaderboard_cache()
     return {"detail": f"Puntos actualizados a {request.new_points} para la predicción {request.prediction_id}"}
 
 # Endpoint de exportación de predicciones
@@ -731,51 +770,86 @@ def export_predictions(db: Session = Depends(get_db)):
 # Endpoint de Clasificación
 @app.get("/api/leaderboard", response_model=List[LeaderboardEntry])
 def get_leaderboard(db: Session = Depends(get_db)):
-    users = db.query(User).filter(User.is_admin == False).all()
+    cached = get_cached_leaderboard()
+    if cached is not None:
+        return cached
+
+    # Obtener ganador de la final una sola vez para bonus de campeón.
+    final_match = (
+        db.query(Match)
+        .filter(Match.phase == "Final", Match.is_finished == True, Match.winner != None)
+        .order_by(Match.id.desc())
+        .first()
+    )
+    final_winner = final_match.winner if final_match else None
+
+    is_finished = Match.is_finished == True
+
+    exact_score_rules = or_(
+        and_(Match.phase == "Fase de Grupos", Prediction.points == 5),
+        and_(Match.phase == "Dieciseisavos", Prediction.points == 6),
+        and_(Match.phase == "Octavos", Prediction.points == 7),
+        and_(Match.phase == "Cuartos", Prediction.points == 9),
+        and_(Match.phase == "Semifinal", Prediction.points == 12),
+        and_(Match.phase == "Final", Prediction.points == 15),
+        and_(Match.phase == "Tercer Lugar", Prediction.points == 10),
+    )
+
+    correct_result_rules = or_(
+        and_(Match.phase == "Fase de Grupos", Prediction.points == 3),
+        and_(Match.phase == "Dieciseisavos", Prediction.points == 3),
+        and_(Match.phase == "Octavos", Prediction.points == 4),
+        and_(Match.phase == "Cuartos", Prediction.points == 5),
+        and_(Match.phase == "Semifinal", Prediction.points == 6),
+        and_(Match.phase == "Final", Prediction.points == 8),
+        and_(Match.phase == "Tercer Lugar", Prediction.points == 5),
+    )
+
+    rows = (
+        db.query(
+            User.id.label("id"),
+            User.username.label("username"),
+            User.empresa.label("empresa"),
+            ChampionPrediction.team.label("champion_team"),
+            func.coalesce(
+                func.sum(case((is_finished, Prediction.points), else_=0)),
+                0,
+            ).label("base_points"),
+            func.coalesce(
+                func.sum(case((and_(is_finished, exact_score_rules), 1), else_=0)),
+                0,
+            ).label("correct_scores"),
+            func.coalesce(
+                func.sum(case((and_(is_finished, correct_result_rules), 1), else_=0)),
+                0,
+            ).label("correct_results"),
+        )
+        .outerjoin(Prediction, Prediction.user_id == User.id)
+        .outerjoin(Match, Match.id == Prediction.match_id)
+        .outerjoin(ChampionPrediction, ChampionPrediction.user_id == User.id)
+        .filter(User.is_admin == False)
+        .group_by(User.id, User.username, User.empresa, ChampionPrediction.team)
+        .all()
+    )
+
     leaderboard = []
-    
-    for user in users:
-        # Filtrar predicciones solo de partidos finalizados
-        predictions = db.query(Prediction).join(Match).filter(Prediction.user_id == user.id, Match.is_finished == True).all()
-        total_points = 0
-        correct_results = 0
-        correct_scores = 0
-        for p in predictions:
-            # Obtener la fase del partido
-            match = db.query(Match).filter(Match.id == p.match_id).first()
-            phase = match.phase if match and match.phase else "Fase de Grupos"
-            # Sistema de puntaje por fase
-            phase_points = {
-                "Fase de Grupos": {"exacto": 5, "ganador": 3, "parcial": 1},
-                "Dieciseisavos": {"exacto": 6, "ganador": 3},
-                "Octavos": {"exacto": 7, "ganador": 4},
-                "Cuartos": {"exacto": 9, "ganador": 5},
-                "Semifinal": {"exacto": 12, "ganador": 6},
-                "Final": {"exacto": 15, "ganador": 8},
-                "Tercer Lugar": {"exacto": 10, "ganador": 5},
-            }
-            # Sumar puntos según la fase y tipo de acierto
-            if phase in phase_points:
-                if p.points == phase_points[phase]["exacto"]:
-                    correct_scores += 1
-                elif p.points == phase_points[phase]["ganador"]:
-                    correct_results += 1
-            total_points += p.points
-        # Sumar 15 puntos si acertó el campeón
-        champion_prediction = db.query(ChampionPrediction).filter(ChampionPrediction.user_id == user.id).first()
-        final_match = db.query(Match).filter(Match.phase == "Final", Match.is_finished == True).first()
-        if champion_prediction and final_match and final_match.winner:
-            if champion_prediction.team == final_match.winner:
-                total_points += 15
-        leaderboard.append(LeaderboardEntry(
-            username=user.username,
-            total_points=total_points,
-            correct_results=correct_results,
-            correct_scores=correct_scores
-        ))
-    
-    # Ordenar por puntos totales
+    for row in rows:
+        champion_bonus = 15 if final_winner and row.champion_team == final_winner else 0
+        leaderboard.append(
+            LeaderboardEntry(
+                id=row.id,
+                username=row.username,
+                empresa=row.empresa,
+                champion_team=row.champion_team,
+                is_admin=False,
+                total_points=int(row.base_points or 0) + champion_bonus,
+                correct_results=int(row.correct_results or 0),
+                correct_scores=int(row.correct_scores or 0),
+            )
+        )
+
     leaderboard.sort(key=lambda x: x.total_points, reverse=True)
+    set_cached_leaderboard(leaderboard)
     return leaderboard
 
 # Función auxiliar para calcular puntos

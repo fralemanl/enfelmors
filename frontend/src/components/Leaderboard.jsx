@@ -102,9 +102,6 @@ function Leaderboard() {
                   <th className="text-center py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
                     Puntos
                   </th>
-                  <th className="text-center py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
-                    Campeón Predicho
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700">
@@ -140,26 +137,6 @@ function Leaderboard() {
                     <td className="text-center py-4 px-6">
                       <span className="text-2xl font-black text-green-400">
                         {entry.total_points}
-                      </span>
-                    </td>
-                    <td className="text-center py-4 px-6">
-                      <span className="font-bold text-yellow-300">
-                        {(() => {
-                          const championValue =
-                            entry.champion_team ||
-                            championByUserId[entry.id] ||
-                            entry.champion ||
-                            entry.team;
-
-                          return championValue ? (
-                            <>
-                              <span className="text-2xl mr-1">👑</span>
-                              {championValue}
-                            </>
-                          ) : (
-                            <span className="text-slate-500 italic">Sin predicción</span>
-                          );
-                        })()}
                       </span>
                     </td>
                   </tr>

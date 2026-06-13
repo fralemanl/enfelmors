@@ -40,7 +40,8 @@ export const getMatch = (id) => api.get(`/matches/${id}`);
 export const createMatch = (matchData) => api.post("/matches", matchData);
 export const updateMatch = (id, matchData) =>
   api.put(`/matches/${id}`, matchData);
-export const deleteMatch = (id) => api.delete(`/matches/${id}`);
+export const deleteMatch = (id, adminUserId) =>
+  api.delete(`/matches/${id}?admin_user_id=${adminUserId}`);
 
 // Predictions
 export const createPrediction = (userId, predictionData) =>

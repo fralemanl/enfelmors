@@ -251,13 +251,27 @@ function AdminPanel() {
     setShowForm(true);
     window.scrollTo({top: 0, behavior: "smooth"});
   };
-  const handleDelete = async (matchId) => {
+  const handleDelete = async (match) => {
     if (!window.confirm("¿Eliminar este partido?")) return;
+
+    if (match?.is_finished) {
+      const confirmFinalized = window.confirm(
+        "Este partido está FINALIZADO y ya puede tener puntos asignados. Al eliminarlo también se borrarán sus predicciones y afectará el ranking. ¿Deseas continuar?",
+      );
+      if (!confirmFinalized) return;
+    }
+
     try {
-      await deleteMatch(matchId);
+      const {data} = await deleteMatch(match.id, adminUserId);
+      alert(
+        `Partido eliminado. Predicciones borradas: ${data?.deleted_predictions ?? 0}`,
+      );
       loadMatches();
     } catch (err) {
-      alert("Error al eliminar el partido");
+      alert(
+        "Error al eliminar el partido: " +
+          (err?.response?.data?.detail || err.message),
+      );
     }
   };
   const resetForm = () => {
@@ -644,7 +658,7 @@ function AdminPanel() {
                               Editar
                             </button>
                             <button
-                              onClick={() => handleDelete(match.id)}
+                              onClick={() => handleDelete(match)}
                               className="text-red-400 hover:text-red-300 font-bold text-sm"
                             >
                               Eliminar

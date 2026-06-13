@@ -591,14 +591,42 @@ def update_match(match_id: int, match_update: MatchUpdate, db: Session = Depends
     return MatchResponse.from_orm_force_string(match)
 
 @app.delete("/api/matches/{match_id}")
-def delete_match(match_id: int, db: Session = Depends(get_db)):
+def delete_match(match_id: int, db: Session = Depends(get_db), admin_user_id: int = None):
+    if admin_user_id is None:
+        raise HTTPException(status_code=400, detail="Se requiere el ID de usuario admin")
+
+    admin = db.query(User).filter(User.id == admin_user_id, User.is_admin == True).first()
+    if not admin:
+        raise HTTPException(status_code=403, detail="Solo los administradores pueden eliminar partidos")
+
     match = db.query(Match).filter(Match.id == match_id).first()
     if not match:
         raise HTTPException(status_code=404, detail="Partido no encontrado")
-    db.delete(match)
-    db.commit()
+
+    try:
+        deleted_predictions = (
+            db.query(Prediction)
+            .filter(Prediction.match_id == match_id)
+            .delete(synchronize_session=False)
+        )
+
+        match_info = f"{match.team_home} vs {match.team_away}"
+        db.delete(match)
+        db.commit()
+        print(
+            f"[AUDIT] admin_id={admin_user_id} deleted_match_id={match_id} "
+            f"match='{match_info}' deleted_predictions={deleted_predictions}"
+        )
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="No se pudo eliminar el partido y sus predicciones")
+
     invalidate_leaderboard_cache()
-    return {"message": "Partido eliminado"}
+    return {
+        "message": "Partido y predicciones asociadas eliminados",
+        "deleted_match_id": match_id,
+        "deleted_predictions": int(deleted_predictions or 0),
+    }
 
 # Endpoints de Predicciones
 
@@ -833,7 +861,6 @@ def get_leaderboard(db: Session = Depends(get_db)):
             User.id.label("id"),
             User.username.label("username"),
             User.empresa.label("empresa"),
-            ChampionPrediction.team.label("champion_team"),
             func.coalesce(
                 func.sum(case((is_finished, Prediction.points), else_=0)),
                 0,
@@ -849,21 +876,32 @@ def get_leaderboard(db: Session = Depends(get_db)):
         )
         .outerjoin(Prediction, Prediction.user_id == User.id)
         .outerjoin(Match, Match.id == Prediction.match_id)
-        .outerjoin(ChampionPrediction, ChampionPrediction.user_id == User.id)
         .filter(User.is_admin == False)
-        .group_by(User.id, User.username, User.empresa, ChampionPrediction.team)
+        .group_by(User.id, User.username, User.empresa)
         .all()
     )
 
+    # Resolver campeón predicho por usuario de forma robusta (toma el registro más reciente)
+    champion_rows = (
+        db.query(ChampionPrediction.user_id, ChampionPrediction.team, ChampionPrediction.id)
+        .order_by(ChampionPrediction.id.desc())
+        .all()
+    )
+    champion_by_user = {}
+    for cp in champion_rows:
+        if cp.user_id not in champion_by_user:
+            champion_by_user[cp.user_id] = cp.team
+
     leaderboard = []
     for row in rows:
-        champion_bonus = 15 if final_winner and row.champion_team == final_winner else 0
+        champion_team = champion_by_user.get(row.id)
+        champion_bonus = 15 if final_winner and champion_team == final_winner else 0
         leaderboard.append(
             LeaderboardEntry(
                 id=row.id,
                 username=row.username,
                 empresa=row.empresa,
-                champion_team=row.champion_team,
+                champion_team=champion_team,
                 is_admin=False,
                 total_points=int(row.base_points or 0) + champion_bonus,
                 correct_results=int(row.correct_results or 0),

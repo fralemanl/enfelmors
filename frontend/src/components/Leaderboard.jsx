@@ -54,14 +54,11 @@ function Leaderboard() {
                   <th className="text-left py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
                     Nombre del Jugador
                   </th>
-                  <th className="text-left py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
-                    Empresa
-                  </th>
                   <th className="text-center py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
                     Puntos
                   </th>
                   <th className="text-center py-4 px-6 text-slate-400 font-bold text-sm uppercase tracking-wider">
-                    Campeón
+                    Campeón Predicho
                   </th>
                 </tr>
               </thead>
@@ -94,11 +91,6 @@ function Leaderboard() {
                         {entry.username}
                       </span>
                     </td>
-                    <td className="py-4 px-6">
-                      <span className="text-slate-300 font-medium">
-                        {entry.empresa || "-"}
-                      </span>
-                    </td>
                     {/* Puntos */}
                     <td className="text-center py-4 px-6">
                       <span className="text-2xl font-black text-green-400">
@@ -107,14 +99,19 @@ function Leaderboard() {
                     </td>
                     <td className="text-center py-4 px-6">
                       <span className="font-bold text-yellow-300">
-                        {entry.champion_team ? (
-                          <>
-                            <span className="text-2xl mr-1">👑</span>
-                            {entry.champion_team}
-                          </>
-                        ) : (
-                          <span className="text-slate-500 italic">-</span>
-                        )}
+                        {(() => {
+                          const championValue =
+                            entry.champion_team || entry.champion || entry.team;
+
+                          return championValue ? (
+                            <>
+                              <span className="text-2xl mr-1">👑</span>
+                              {championValue}
+                            </>
+                          ) : (
+                            <span className="text-slate-500 italic">Sin predicción</span>
+                          );
+                        })()}
                       </span>
                     </td>
                   </tr>

@@ -1,5 +1,9 @@
 import React, {useState, useEffect} from "react";
-import {getLeaderboard, getChampionPredictions} from "../api";
+import {
+  getLeaderboard,
+  getChampionPredictions,
+  getChampionPrediction,
+} from "../api";
 
 function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -12,20 +16,46 @@ function Leaderboard() {
 
   const loadLeaderboard = async () => {
     try {
-      const [leaderboardRes, championsRes] = await Promise.all([
-        getLeaderboard(),
-        getChampionPredictions().catch(() => ({data: []})),
-      ]);
+      const leaderboardRes = await getLeaderboard();
 
       const data = Array.isArray(leaderboardRes.data) ? leaderboardRes.data : [];
-      const championsData = Array.isArray(championsRes.data) ? championsRes.data : [];
 
-      const championMap = championsData.reduce((acc, item) => {
-        if (item?.user_id && item?.champion_team) {
-          acc[item.user_id] = item.champion_team;
-        }
-        return acc;
-      }, {});
+      let championMap = {};
+
+      try {
+        const championsRes = await getChampionPredictions();
+        const championsData = Array.isArray(championsRes.data)
+          ? championsRes.data
+          : [];
+
+        championMap = championsData.reduce((acc, item) => {
+          if (item?.user_id && item?.champion_team) {
+            acc[item.user_id] = item.champion_team;
+          }
+          return acc;
+        }, {});
+      } catch {
+        // Fallback compatible con backends que solo exponen /champion/{user_id}
+        const championEntries = await Promise.all(
+          data.map(async (entry) => {
+            try {
+              const singleChampionRes = await getChampionPrediction(entry.id);
+              const championTeam = singleChampionRes?.data?.team;
+              return championTeam ? [entry.id, championTeam] : null;
+            } catch {
+              return null;
+            }
+          }),
+        );
+
+        championMap = championEntries.reduce((acc, item) => {
+          if (item) {
+            const [userId, team] = item;
+            acc[userId] = team;
+          }
+          return acc;
+        }, {});
+      }
 
       setLeaderboard(data);
       setChampionByUserId(championMap);

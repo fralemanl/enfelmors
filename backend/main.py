@@ -109,6 +109,12 @@ class LeaderboardEntry(BaseModel):
     correct_results: int
     correct_scores: int
 
+
+class ChampionByUserEntry(BaseModel):
+    user_id: int
+    username: str
+    champion_team: Optional[str] = None
+
 class AdjustPointsRequest(BaseModel):
     prediction_id: int
     new_points: int
@@ -912,6 +918,36 @@ def get_leaderboard(db: Session = Depends(get_db)):
     leaderboard.sort(key=lambda x: x.total_points, reverse=True)
     set_cached_leaderboard(leaderboard)
     return leaderboard
+
+
+@app.get("/api/champion-predictions", response_model=List[ChampionByUserEntry])
+def get_champion_predictions(db: Session = Depends(get_db)):
+    users = (
+        db.query(User.id, User.username)
+        .filter(User.is_admin == False)
+        .order_by(User.id.asc())
+        .all()
+    )
+
+    champion_rows = (
+        db.query(ChampionPrediction.user_id, ChampionPrediction.team, ChampionPrediction.id)
+        .order_by(ChampionPrediction.id.desc())
+        .all()
+    )
+
+    champion_by_user = {}
+    for cp in champion_rows:
+        if cp.user_id not in champion_by_user:
+            champion_by_user[cp.user_id] = cp.team
+
+    return [
+        ChampionByUserEntry(
+            user_id=u.id,
+            username=u.username,
+            champion_team=champion_by_user.get(u.id),
+        )
+        for u in users
+    ]
 
 # Función auxiliar para calcular puntos
 def calculate_points_for_match(match_id: int, db: Session):

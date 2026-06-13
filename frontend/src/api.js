@@ -64,6 +64,7 @@ export const resetPoints = (adminUserId) =>
 
 // Champion Prediction
 export const getChampionPrediction = (userId) => api.get(`/champion/${userId}`);
+export const getChampionPredictions = () => api.get("/champion-predictions");
 
 // Export
 export const exportPredictions = () => api.get("/export/predictions");

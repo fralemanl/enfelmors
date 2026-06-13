@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
-import {getLeaderboard} from "../api";
+import {getLeaderboard, getChampionPredictions} from "../api";
 
 function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
+  const [championByUserId, setChampionByUserId] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -11,9 +12,23 @@ function Leaderboard() {
 
   const loadLeaderboard = async () => {
     try {
-      const response = await getLeaderboard();
-      const data = Array.isArray(response.data) ? response.data : [];
+      const [leaderboardRes, championsRes] = await Promise.all([
+        getLeaderboard(),
+        getChampionPredictions().catch(() => ({data: []})),
+      ]);
+
+      const data = Array.isArray(leaderboardRes.data) ? leaderboardRes.data : [];
+      const championsData = Array.isArray(championsRes.data) ? championsRes.data : [];
+
+      const championMap = championsData.reduce((acc, item) => {
+        if (item?.user_id && item?.champion_team) {
+          acc[item.user_id] = item.champion_team;
+        }
+        return acc;
+      }, {});
+
       setLeaderboard(data);
+      setChampionByUserId(championMap);
       setLoading(false);
     } catch (err) {
       console.error("Error loading leaderboard:", err);
@@ -101,7 +116,10 @@ function Leaderboard() {
                       <span className="font-bold text-yellow-300">
                         {(() => {
                           const championValue =
-                            entry.champion_team || entry.champion || entry.team;
+                            entry.champion_team ||
+                            championByUserId[entry.id] ||
+                            entry.champion ||
+                            entry.team;
 
                           return championValue ? (
                             <>

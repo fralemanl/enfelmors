@@ -10,6 +10,7 @@ import {
   resetUserPassword,
   deleteUser,
   resetAll,
+  resetPoints,
   exportPredictions,
   generateResetLink,
 } from "../api";
@@ -299,6 +300,27 @@ function AdminPanel() {
     }
   };
 
+  const handleResetPoints = async () => {
+    if (
+      !window.confirm(
+        "¿Seguro que deseas resetear SOLO los puntos a 0? Las predicciones y partidos se mantienen.",
+      )
+    )
+      return;
+
+    try {
+      const {data} = await resetPoints(adminUserId);
+      alert(
+        `Puntos reiniciados a 0. Predicciones afectadas: ${data?.updated_predictions ?? 0}`,
+      );
+    } catch (err) {
+      alert(
+        "Error al resetear puntos: " +
+          (err?.response?.data?.detail || err.message),
+      );
+    }
+  };
+
   return (
     <div>
       {/* Tabs */}
@@ -354,13 +376,22 @@ function AdminPanel() {
                 {showForm ? "Cancelar" : "+ Nuevo Partido"}
               </button>
               {isAdmin && (
-                <button
-                  onClick={handleResetAll}
-                  className="bg-gradient-to-r from-red-700 to-red-900 text-white font-bold px-4 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform border border-red-900"
-                  title="Resetear todos los partidos, predicciones y campeón"
-                >
-                  Resetear TODO
-                </button>
+                <>
+                  <button
+                    onClick={handleResetPoints}
+                    className="bg-gradient-to-r from-amber-600 to-amber-800 text-white font-bold px-4 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform border border-amber-900"
+                    title="Resetear solo puntos (predicciones y partidos se mantienen)"
+                  >
+                    Resetear Puntos
+                  </button>
+                  <button
+                    onClick={handleResetAll}
+                    className="bg-gradient-to-r from-red-700 to-red-900 text-white font-bold px-4 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform border border-red-900"
+                    title="Resetear todos los partidos, predicciones y campeón"
+                  >
+                    Resetear TODO
+                  </button>
+                </>
               )}
             </div>
           </div>

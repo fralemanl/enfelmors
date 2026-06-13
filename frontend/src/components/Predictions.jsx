@@ -66,37 +66,6 @@ function Predictions({user}) {
     return matches.find((m) => m.id === matchId);
   };
 
-  // Puntajes por fase
-  const phasePoints = {
-    "Fase de Grupos": {exacto: 5, ganador: 3, parcial: 1},
-    Dieciseisavos: {exacto: 6, ganador: 3},
-    Octavos: {exacto: 7, ganador: 4},
-    Cuartos: {exacto: 9, ganador: 5},
-    Semifinal: {exacto: 12, ganador: 6},
-    Final: {exacto: 15, ganador: 8},
-  };
-
-  let exactos = 0,
-    ganador = 0,
-    parcial = 0,
-    totalPoints = 0;
-
-  predictions.forEach((pred) => {
-    const match = getMatchById(pred.match_id);
-    if (!match) return;
-    const phase = match.phase || "Fase de Grupos";
-    const pts = pred.points || 0;
-    totalPoints += pts;
-    if (pts === phasePoints[phase]?.exacto) exactos++;
-    else if (pts === phasePoints[phase]?.ganador) ganador++;
-    else if (phase === "Fase de Grupos" && pts === phasePoints[phase]?.parcial)
-      parcial++;
-  });
-  // Sumar 15 puntos si acertó el campeón
-  if (champion && finalWinner && champion.team === finalWinner) {
-    totalPoints += 15;
-  }
-
   const formatDate = (dateStr) => {
     const panamaDate = toPanamaTime(dateStr);
     if (!panamaDate || !panamaDate.isValid || !panamaDate.isValid()) {
@@ -160,66 +129,6 @@ function Predictions({user}) {
     <div>
       <h1 className="text-3xl font-black mb-8 text-white">Mis puntos</h1>
 
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-          <div className="text-4xl font-black text-green-400 mb-1">
-            {totalPoints}
-          </div>
-          <div className="text-slate-400 font-medium uppercase text-sm tracking-wider">
-            Total Points
-          </div>
-        </div>
-        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-          <div className="text-4xl font-black text-blue-400 mb-1">
-            {exactos}
-          </div>
-          <div className="text-slate-400 font-medium uppercase text-sm tracking-wider">
-            Scores exactos
-          </div>
-        </div>
-        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-          <div className="text-4xl font-black text-yellow-400 mb-1">
-            {ganador}
-          </div>
-          <div className="text-slate-400 font-medium uppercase text-sm tracking-wider">
-            Ganadores predichos
-          </div>
-        </div>
-        <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-          <div className="text-4xl font-black text-pink-400 mb-1">
-            {parcial}
-          </div>
-          <div className="text-slate-400 font-medium uppercase text-sm tracking-wider">
-            Goles predichos (Fase de grupos)
-          </div>
-        </div>
-      </div>
-      {champion && (
-        <div className="mb-8 bg-slate-900/70 p-4 rounded-xl border border-yellow-700 flex items-center gap-4">
-          <span className="text-2xl">👑</span>
-          <span className="text-white font-bold">
-            Tu campeón del Mundial:{" "}
-            <span className="text-yellow-300">{champion.team}</span>
-            {finalWinner &&
-              (champion.team === finalWinner ? (
-                <span className="ml-2 text-green-400 font-black">
-                  +15 pts (¡Buen trabajo!)
-                </span>
-              ) : (
-                <span className="ml-2 text-red-400 font-black">
-                  Mala suerte
-                </span>
-              ))}
-            {!finalWinner && (
-              <span className="ml-2 text-slate-400">
-                (15 puntos si aciertas)
-              </span>
-            )}
-          </span>
-        </div>
-      )}
-
       {/* Lista de predicciones */}
       <div className="bg-slate-800 rounded-xl shadow-xl border border-slate-700 overflow-hidden">
         <h2 className="text-xl font-bold p-6 border-b border-slate-700 text-white">
@@ -268,9 +177,20 @@ function Predictions({user}) {
                     <span className="text-xs text-slate-400 font-bold uppercase">
                       {getPhaseLabelInEnglish(match.phase)}
                     </span>
-                    <span className="text-xs text-slate-400 font-bold">
-                      {match.stadium || ""}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-400 font-bold">
+                        {match.stadium || ""}
+                      </span>
+                      <span
+                        className={`text-xs font-black px-2 py-1 rounded border ${
+                          (prediction.points || 0) > 0
+                            ? "text-green-300 border-green-700 bg-green-900/30"
+                            : "text-slate-300 border-slate-600 bg-slate-800/70"
+                        }`}
+                      >
+                        {(prediction.points || 0)} pts
+                      </span>
+                    </div>
                   </div>
 
                   {/* Fila 2: equipos y predicción */}

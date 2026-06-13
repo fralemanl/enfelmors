@@ -502,6 +502,29 @@ def reset_all(db: Session = Depends(get_db), admin_user_id: int = None):
     db.commit()
     invalidate_leaderboard_cache()
     return {"message": "Todos los puntajes y campeón han sido reseteados, los partidos se mantienen"}
+
+
+@app.post("/api/reset_points", status_code=status.HTTP_200_OK)
+def reset_points(db: Session = Depends(get_db), admin_user_id: int = None):
+    """
+    Reinicia solo los puntos acumulados de las predicciones.
+    No modifica marcador predicho, partidos ni campeón.
+    """
+    if admin_user_id is None:
+        raise HTTPException(status_code=400, detail="Se requiere el ID de usuario admin")
+
+    admin = db.query(User).filter(User.id == admin_user_id, User.is_admin == True).first()
+    if not admin:
+        raise HTTPException(status_code=403, detail="Solo los administradores pueden resetear puntos")
+
+    updated_count = db.query(Prediction).update({Prediction.points: 0}, synchronize_session=False)
+    db.commit()
+    invalidate_leaderboard_cache()
+
+    return {
+        "message": "Todos los puntos fueron reiniciados a 0",
+        "updated_predictions": int(updated_count or 0),
+    }
 @app.post("/api/matches", response_model=MatchResponse)
 def create_match(match: MatchCreate, db: Session = Depends(get_db)):
     match_data = match.dict()

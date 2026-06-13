@@ -131,7 +131,7 @@ from fastapi import status
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Boolean
-from sqlalchemy import and_, or_, case, func, text
+from sqlalchemy import and_, or_, case, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, relationship
 from pydantic import BaseModel
@@ -171,33 +171,6 @@ def get_cached_leaderboard():
 def set_cached_leaderboard(data) -> None:
     _leaderboard_cache["data"] = data
     _leaderboard_cache["expires_at"] = monotonic() + LEADERBOARD_CACHE_TTL_SECONDS
-
-
-def get_legacy_champion_map(db: Session, user_ids: List[int]) -> dict:
-    """
-    Compatibilidad con datos legacy donde el campeón se guardó en users.champion
-    en vez de champion_predictions.
-    """
-    if not user_ids:
-        return {}
-
-    columns = db.execute(text("PRAGMA table_info(users)")).fetchall()
-    column_names = {c[1] for c in columns}
-    if "champion" not in column_names:
-        return {}
-
-    placeholders = ",".join(str(int(uid)) for uid in user_ids)
-    query = text(
-        f"""
-        SELECT id, champion
-        FROM users
-        WHERE id IN ({placeholders})
-          AND champion IS NOT NULL
-          AND TRIM(champion) != ''
-        """
-    )
-    rows = db.execute(query).fetchall()
-    return {int(row[0]): row[1] for row in rows}
 
 
 def parse_iso_to_utc_naive(date_value: str) -> datetime:
@@ -295,12 +268,7 @@ def get_db():
 def get_champion_prediction(user_id: int, db: Session = Depends(get_db)):
     champion = db.query(ChampionPrediction).filter(ChampionPrediction.user_id == user_id).first()
     if not champion:
-        legacy_map = get_legacy_champion_map(db, [user_id])
-        legacy_champion = legacy_map.get(user_id)
-        if not legacy_champion:
-            raise HTTPException(status_code=404, detail="Predicción de campeón no encontrada")
-
-        return ChampionPredictionResponse(user_id=user_id, team=legacy_champion)
+        raise HTTPException(status_code=404, detail="Predicción de campeón no encontrada")
 
     return champion
 
@@ -931,13 +899,6 @@ def get_leaderboard(db: Session = Depends(get_db)):
         if cp.user_id not in champion_by_user:
             champion_by_user[cp.user_id] = cp.team
 
-    # Fallback legacy: completar faltantes desde users.champion
-    user_ids = [int(row.id) for row in rows]
-    legacy_map = get_legacy_champion_map(db, user_ids)
-    for uid in user_ids:
-        if uid not in champion_by_user and uid in legacy_map:
-            champion_by_user[uid] = legacy_map[uid]
-
     leaderboard = []
     for row in rows:
         champion_team = champion_by_user.get(row.id)
@@ -979,13 +940,6 @@ def get_champion_predictions(db: Session = Depends(get_db)):
     for cp in champion_rows:
         if cp.user_id not in champion_by_user:
             champion_by_user[cp.user_id] = cp.team
-
-    # Fallback legacy para usuarios sin registro en champion_predictions
-    user_ids = [int(u.id) for u in users]
-    legacy_map = get_legacy_champion_map(db, user_ids)
-    for uid in user_ids:
-        if uid not in champion_by_user and uid in legacy_map:
-            champion_by_user[uid] = legacy_map[uid]
 
     return [
         ChampionByUserEntry(

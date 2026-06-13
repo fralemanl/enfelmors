@@ -113,6 +113,14 @@ function Predictions({user}) {
     return phaseMap[normalized] || phase;
   };
 
+  const basePoints = predictions.reduce(
+    (sum, prediction) => sum + (prediction.points || 0),
+    0,
+  );
+  const championBonus =
+    champion && finalWinner && champion.team === finalWinner ? 15 : 0;
+  const totalPoints = basePoints + championBonus;
+
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
   }
@@ -128,6 +136,13 @@ function Predictions({user}) {
   return (
     <div>
       <h1 className="text-3xl font-black mb-8 text-white">Mis puntos</h1>
+
+      <div className="mb-6 bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg">
+        <div className="text-slate-400 font-medium uppercase text-xs tracking-wider mb-1">
+          Total acumulado
+        </div>
+        <div className="text-4xl font-black text-green-400">{totalPoints}</div>
+      </div>
 
       {/* Lista de predicciones */}
       <div className="bg-slate-800 rounded-xl shadow-xl border border-slate-700 overflow-hidden">
